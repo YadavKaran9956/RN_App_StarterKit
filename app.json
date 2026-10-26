@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Skyestone",
+    "slug": "skyestone-app-starter",
+    "scheme": "skyestone",
+    "version": "1.0.0",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "package": "com.anonymous.skyestoneappstarter"
+    }
+  }
+}
