@@ -54,3 +54,23 @@ Self-audit the code against these 4 attack vectors before marking it done:
    - Ensure layout elements sit safely within device `SafeAreaView` boundaries and respond to dark/light theme tokens cleanly.
 
 > **Mandatory Action:** If you discover a bug or vulnerability during this self-audit, you must fix the code immediately BEFORE marking the task finished.
+
+---
+
+## 6. Autonomous Task Complexity Analysis & Sub-Agent Orchestration
+
+Whenever you receive a feature prompt, module implementation request, or architectural refactor, you MUST evaluate its complexity BEFORE writing code:
+
+1. **Complexity Assessment:**
+   - **Single-Scope Task:** Single screen UI, minor bug fix, or simple helper utility → Execute directly as a single agent.
+   - **Complex / Multi-Module Task:** Involves multiple full screens, complex state machines, data fetching + form validation + persistence layers, or full feature modules → Automatically break down into sub-agents/sub-tasks.
+
+2. **Sub-Agent Decomposition Strategy:**
+   When handling a complex task, divide execution into discrete, non-overlapping worker roles:
+   - **Agent A (Data & Domain Layer):** Types, Zod schemas, Zustand stores, MMKV persistence, API interceptors.
+   - **Agent B (Atomic UI & Components):** Presentational components, layout wrappers, design token application.
+   - **Agent C (Screen Integration & Navigation):** Screen routes under `/app`, form hook binding, navigation flow.
+   - **Agent D (Adversarial QA & Self-Audit):** Executes Section 5 vulnerability, input abuse, and race condition tests across all generated code.
+
+3. **Execution Rule:**
+   Never attempt to build a complex multi-screen feature in a single unstructured pass. Complete each sub-agent phase sequentially, verifying zero TypeScript errors before delegating to the next phase.

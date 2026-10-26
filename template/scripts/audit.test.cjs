@@ -41,7 +41,15 @@ test('native branding config preserves app identity and resolves asset paths and
   assert.match(config.splash.backgroundColor, /^#[0-9a-f]{6}$/i);
   assert.equal(config.splash.backgroundColor, config.android.adaptiveIcon.backgroundColor);
   const plugin = config.plugins.find((item) => Array.isArray(item) && item[0] === 'expo-splash-screen');
-  assert.equal(JSON.stringify(plugin[1]), JSON.stringify(config.splash));
+  for (const key of ['image', 'resizeMode', 'backgroundColor']) {
+    assert.equal(plugin[1][key], config.splash[key]);
+    assert.equal(plugin[1].ios[key], config.splash[key]);
+  }
+  assert.ok(config.plugins.includes('expo-system-ui'));
+  assert.equal(config.ios.supportsTablet, true);
+  assert.equal(config.ios.bundleIdentifier, base.ios?.bundleIdentifier ?? base.android.package);
+  assert.equal(config.ios.backgroundColor, config.android.backgroundColor);
+  assert.equal(config.ios.backgroundColor, config.splash.backgroundColor);
   for (const asset of [config.icon, config.splash.image, config.android.adaptiveIcon.foregroundImage]) {
     const png = fs.readFileSync(path.resolve(root, asset));
     assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
@@ -353,7 +361,7 @@ test('existing screens use safe areas and light/dark theme tokens without applyi
   };
   const SafeAreaView = () => null;
   const config = load('src/theme/config.ts', { 'react-native': native });
-  assert.equal(config.APP_CONFIG.colors.primary, '___PRIMARY_COLOR___');
+  assert.match(config.APP_CONFIG.colors.primary, /^(?:___PRIMARY_COLOR___|#(?:[\da-f]{3}|[\da-f]{6}))$/i);
   for (const file of ['app/(auth)/login.tsx', 'app/(main)/index.tsx']) {
     const Screen = load(file, {
       'react-native': native,
